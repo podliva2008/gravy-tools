@@ -1,6 +1,6 @@
 """
-Gravy Tools
-Для Minecraft 1.18.2
+Gravy-Tools
+Инструменты для автоматизации рутинных действий билдеров TeamCIS
 """
 
 __author__ = 'Колесников Богдан aka podliva_2008'
