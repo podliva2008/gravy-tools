@@ -23,12 +23,40 @@ from io import BytesIO
 import pydirectinput
 import threading
 import math
+import json
 
 class Script():
     def __init__(self):
         self.win_name = 'Minecraft* 1.18.2 - Сетевая игра (сторонний сервер)'
-
         pydirectinput.PAUSE = 0.01  # Понижаем дефолтную длинную паузу
+
+        try:
+            with open('config.json') as file:
+                json_string = file.read()
+                self.config = json.loads(json_string)
+        except FileNotFoundError:
+            self.config = {
+                'walls': [
+                    {'block': 'bricks',
+                     'mix': 'bricks'},
+                    {'block': 'granite',
+                     'mix': 'granite,bricks,terracotta'},
+                    {'block': 'andesite',
+                     'mix': 'gravel,stone,andesite'},
+                    {'block': 'birch_planks',
+                     'mix': 'birch_planks,stripped_birch_wood'},
+                    {'block': 'white_concrete_powder',
+                     'mix': 'white_concrete_powder,white_wool'}
+                ],
+                'slope_roofs': ['spruce', 'acacia', 'dark_oak',
+                                'smooth_stone', 'sandstone',
+                                'cut_sandstone', 'stone_brick',
+                                'quartz', 'jungle'],
+                'flat_roofs': ['light_gray', 'blue']
+            }
+
+            with open('config.json', 'w') as file:
+                json.dump(self.config, file, indent=4)
 
     def open_window(self):
         """Подготовка окна майнкрафта к работе скрипта"""
@@ -109,21 +137,10 @@ class Script():
 
         tech = 'emerald_ore'  # id технического блока
 
-        # Записи типов стен сделаны по типу: [id блока, микс]
-        walls = [['bricks', 'bricks'],
-                 ['granite', 'granite,bricks,terracotta'],
-                 ['andesite', 'gravel,stone,andesite'],
-                 ['birch_planks', 'birch_planks,stripped_birch_wood'],
-                 ['white_concrete_powder', 'white_concrete_powder,white_wool']]
-        
-        # Цвета/типы крыш полублоками
-        slope_roofs = ['spruce', 'acacia', 'dark_oak',
-                       'smooth_stone', 'sandstone',
-                       'cut_sandstone', 'stone_brick',
-                       'quartz', 'jungle']
-
-        # Цвета/типы плоских крыш
-        flat_roofs = ['light_gray', 'blue']
+        # Типы стен и крыш берутся из json-файла конфига
+        walls = self.config['walls']
+        slope_roofs = self.config['slope_roofs']
+        flat_roofs = self.config['flat_roofs']
 
         roofs_list = ('_slab,'.join(slope_roofs) + '_slab,' +
                       '_carpet,'.join(flat_roofs) + '_carpet')
@@ -214,7 +231,7 @@ class Script():
         self.echo('//expand 1 u')
 
         for i in range(len(walls)):
-            color = walls[i][0]
+            color = walls[i]['block']
 
             self.echo(f'//re >{color} {color}')
             self.echo(f'//re >{color} bricks')
@@ -434,8 +451,8 @@ class Script():
 
         for i in range(len(walls)):
             for f in range(1, 10):
-                self.echo(f'//gmask #offset[0][-{f}][0][{walls[i][0]}]')
-                self.echo(f'//re bricks {walls[i][0]}')
+                self.echo(f'//gmask #offset[0][-{f}][0][{walls[i]["block"]}]')
+                self.echo(f'//re bricks {walls[i]["block"]}')
 
         self.echo('//gmask')
         
@@ -444,7 +461,7 @@ class Script():
         self.echo('//expand 1 d')
 
         for i in range(len(walls)):
-            self.echo(f'//re {walls[i][0]} {walls[i][1]}')
+            self.echo(f'//re {walls[i]["block"]} {walls[i]["mix"]}')
         
         # Покраска технических блоков в цвет бэкграунда окон
 
