@@ -1,0 +1,39 @@
+{
+    "walls": [
+        {
+            "block": "bricks",
+            "mix": "bricks"
+        },
+        {
+            "block": "granite",
+            "mix": "granite,bricks,terracotta"
+        },
+        {
+            "block": "andesite",
+            "mix": "gravel,stone,andesite"
+        },
+        {
+            "block": "birch_planks",
+            "mix": "birch_planks,stripped_birch_wood"
+        },
+        {
+            "block": "white_concrete_powder",
+            "mix": "white_concrete_powder,white_wool"
+        }
+    ],
+    "slope_roofs": [
+        "spruce",
+        "acacia",
+        "dark_oak",
+        "smooth_stone",
+        "sandstone",
+        "cut_sandstone",
+        "stone_brick",
+        "quartz",
+        "jungle"
+    ],
+    "flat_roofs": [
+        "light_gray",
+        "blue"
+    ]
+}
