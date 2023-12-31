@@ -4,9 +4,8 @@ Gravy-Tools
 """
 
 __author__ = 'Колесников Богдан aka podliva_2008'
-__credits__ = ('Колесников Богдан aka podliva_2008, '
-               'Петров Артём aka Brigart, '
-               'Занегин Владислав aka Criffane 14')
+__credits__ = ('Петров Артём aka Brigart (оригинал скрипта для ЧС), '
+               'Занегин Владислав aka Criffane 14 (тестирование)')
 __contact__ = 'Discord: podliva_2008'
 __version__ = 'Протестировано на Minecraft 1.18.2 с FAWE 2.8.5'
 
