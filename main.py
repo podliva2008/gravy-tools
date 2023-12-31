@@ -30,10 +30,13 @@ class Script():
         pydirectinput.PAUSE = 0.01  # Понижаем дефолтную длинную паузу
 
         try:
+            # Получаем настройки из файла конфига
             with open('config.json') as file:
                 json_string = file.read()
                 self.config = json.loads(json_string)
         except FileNotFoundError:
+            # Если таковой файл осутствует, то создаём его
+            # Дефолтный конфиг, использованный в ЧС Краснодара
             self.config = {
                 'walls': [
                     {'block': 'bricks',
