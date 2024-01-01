@@ -39,9 +39,9 @@ class Script():
             # Дефолтный конфиг, использованный в ЧС Краснодара
             self.config = {
                 'walls': [
-                    {'block': 'bricks',
-                     'mix': 'bricks'},
                     {'block': 'granite',
+                     'mix': 'granite,polished_granite'},
+                    {'block': 'bricks',
                      'mix': 'granite,bricks,terracotta'},
                     {'block': 'andesite',
                      'mix': 'gravel,stone,andesite'},

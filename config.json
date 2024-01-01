@@ -1,11 +1,11 @@
 {
     "walls": [
         {
-            "block": "bricks",
-            "mix": "bricks"
+            "block": "granite",
+            "mix": "granite,polished_granite"
         },
         {
-            "block": "granite",
+            "block": "bricks",
             "mix": "granite,bricks,terracotta"
         },
         {
