@@ -347,18 +347,14 @@ class Script():
                       f'#offset[0][1][-1][{slope_roofs[i]}_slab[type=bottom]]')
             self.echo(f'//re air {slope_roofs[i]}_slab[type=top]')
 
-            for _ in range(5):
+            for _ in range(7):
                 self.echo('//gmask !'
-                          f'#offset[1][-1][0][{slope_roofs[i]}_slab'
-                          '[type=bottom]],'
-                          f'#offset[-1][-1][0][{slope_roofs[i]}_slab'
-                          '[type=bottom]],'
-                          f'#offset[0][-1][1][{slope_roofs[i]}_slab'
-                          '[type=bottom]],'
-                          f'#offset[0][-1][-1][{slope_roofs[i]}_slab'
-                          '[type=bottom]]')
+                          f'#offset[2][-1][0][air],'
+                          f'#offset[-2][-1][0][air],'
+                          f'#offset[0][-1][2][air],'
+                          f'#offset[0][-1][-2][air]')
                 self.echo(f'//re >{slope_roofs[i]}_slab[type=double] '
-                          f'{slope_roofs[i]}_slab')
+                          f'{slope_roofs[i]}_slab[type=bottom]')
 
                 self.echo('//gmask !'
                           '#offset[1][0][0][air],'
