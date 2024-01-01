@@ -656,6 +656,14 @@ class Interface:
     def update_map(self):
         """Обновление тайлов карты по географическим координатам."""
 
+        if len(self.polygons) > 0 or len(self.polygon_points) > 0:
+            answer = messagebox.askyesno('Gravy Tools',
+                                         'Полигоны . Продолжить?')
+            if not answer:
+                return
+
+        self.polygons = []
+        self.polygon_points = []
         lat, lon = self.coords.get().split(', ')
         lat, lon = float(lat), float(lon)
         z = self.scale.get()
