@@ -496,11 +496,11 @@ class Interface:
                }
 
         # Окно и его настройки
-        root = Tk()
-        root.title('Gravy Tools')
-        root.geometry('768x862')
-        root.resizable(False, False)
-        root.protocol('WM_DELETE_WINDOW', self.save_cache)
+        self.root = Tk()
+        self.root.title('Gravy Tools')
+        self.root.geometry('768x862')
+        self.root.resizable(False, False)
+        self.root.protocol('WM_DELETE_WINDOW', self.save_cache)
 
         self.scale = IntVar()
         self.coords = StringVar()
@@ -511,8 +511,8 @@ class Interface:
         self.polygon_points = []
 
         # Создаём рамки для размещения элементов управления
-        upper_frame = Frame(root)
-        lower_frame = Frame(root)
+        upper_frame = Frame(self.root)
+        lower_frame = Frame(self.root)
 
         # Создаём холст для размещения карты и полигонов
         self.map_canvas = Canvas(width=768, height=768, cursor='tcross')
@@ -567,7 +567,7 @@ class Interface:
 
         self.update_map()  # Для помещения карты на холст надо её обновить
 
-        root.mainloop()
+        self.root.mainloop()
 
     def show_scale(self):
         """
@@ -704,6 +704,8 @@ class Interface:
 
         with open('cache.json', 'w') as file:
             json.dump(user_cache, file, indent=4)
+
+        self.root.destroy()
 
 
 if __name__ == '__main__':
