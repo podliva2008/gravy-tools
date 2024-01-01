@@ -490,7 +490,6 @@ class Interface:
                 cached_entry = json.loads(json_string)
         except FileNotFoundError:
                cached_entry = {
-                   'polygons': [],
                    'coords': '45.02783176031718, 38.98838186625211',
                    'scale': 20
                }
@@ -507,7 +506,7 @@ class Interface:
         self.selection_type = StringVar()
         self.coords.set(cached_entry['coords'])
 
-        self.polygons = cached_entry['polygons']
+        self.polygons = []
         self.polygon_points = []
 
         # Создаём рамки для размещения элементов управления
@@ -697,7 +696,6 @@ class Interface:
         """Сохранение последних действий пользователя в кэше"""
 
         user_cache = {
-            'polygons': self.polygons,
             'coords': self.coords.get(),
             'scale': self.scale.get()
         }
