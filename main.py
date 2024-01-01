@@ -524,7 +524,7 @@ class Interface:
         lower_frame.pack()
 
         coords_entry = ttk.Entry(master=upper_frame,
-                                      width=20,
+                                      width=35,
                                       textvariable=self.coords)
         coords_button = ttk.Button(master=upper_frame,
                                         text='Обновить',
@@ -538,6 +538,7 @@ class Interface:
                                        to=20,
                                        variable=self.scale)
         self.scaling_scale.set(cached_entry['scale'])
+        self.scaling_label['text'] = f'Масштаб: {self.scale.get()}'
         self.scaling_scale.bind(sequence='<Motion>',
                                 func=lambda event: self.show_scale())
         self.scaling_scale.bind(sequence='<ButtonRelease-1>',
