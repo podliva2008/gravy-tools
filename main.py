@@ -15,11 +15,11 @@ import win32process as wproc
 import win32api as wapi
 import win32gui as wgui
 import win32con as wcon
+import pydirectinput
 import requests
 
 from tkinter import ttk, Tk, StringVar, IntVar, Canvas, Frame, messagebox
 from io import BytesIO
-import pydirectinput
 import threading
 import math
 import json
@@ -31,7 +31,7 @@ class Script():
 
         try:
             # Получаем настройки из файла конфига
-            with open('config.json') as file:
+            with open('config.json', 'r') as file:
                 json_string = file.read()
                 self.config = json.loads(json_string)
         except FileNotFoundError:
@@ -484,18 +484,30 @@ class Interface:
     def __init__(self):
         """Создание окна и виджетов, их настройка."""
 
+        try:
+            with open('cache.json', 'r') as file:
+                json_string = file.read()
+                cached_entry = json.loads(json_string)
+        except FileNotFoundError:
+               cached_entry = {
+                   'polygons': [],
+                   'coords': '45.02783176031718, 38.98838186625211',
+                   'scale': 20
+               }
+
         # Окно и его настройки
         root = Tk()
         root.title('Gravy Tools')
         root.geometry('768x862')
         root.resizable(False, False)
+        root.protocol('WM_DELETE_WINDOW', self.save_cache)
 
         self.scale = IntVar()
         self.coords = StringVar()
         self.selection_type = StringVar()
-        self.coords.set('45.02783176031718, 38.98838186625211')
+        self.coords.set(cached_entry['coords'])
 
-        self.polygons = []
+        self.polygons = cached_entry['polygons']
         self.polygon_points = []
 
         # Создаём рамки для размещения элементов управления
@@ -526,7 +538,7 @@ class Interface:
                                        from_=0,
                                        to=20,
                                        variable=self.scale)
-        self.scaling_scale.set(20)
+        self.scaling_scale.set(cached_entry['scale'])
         self.scaling_scale.bind(sequence='<Motion>',
                                 func=lambda event: self.show_scale())
         self.scaling_scale.bind(sequence='<ButtonRelease-1>',
@@ -674,13 +686,25 @@ class Interface:
                 response = requests.get(url)
                 decoded = BytesIO(response.content)
 
-                # Иной код говорит об отсутствии тайла или ошибке
                 if response.status_code == 200:
                     tile = Image.open(decoded)
                     map.paste(im=tile, box=(256*q, 256*i))
         self.map_tk = ImageTk.PhotoImage(map)
 
         self.map_canvas.create_image(0, 0, anchor='nw', image=self.map_tk)
+
+    def save_cache(self):
+        """Сохранение последних действий пользователя в кэше"""
+
+        user_cache = {
+            'polygons': self.polygons,
+            'coords': self.coords.get(),
+            'scale': self.scale.get()
+        }
+
+        with open('cache.json', 'w') as file:
+            json.dump(user_cache, file, indent=4)
+
 
 if __name__ == '__main__':
     script = Script()
