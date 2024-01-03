@@ -752,6 +752,10 @@ class Interface:
                                      anchor='nw',
                                      image=self.map_tk)
 
+        # После обновления карты полигоны пропадают, поднимаем их
+        for tag in range(len(self.polygons) + 1):
+            self.map_canvas.tag_raise([f'poly_{tag}'])
+
     def save_cache(self):
         """Сохранение последних действий пользователя в кэше"""
 
