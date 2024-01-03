@@ -1,0 +1,10 @@
+{
+    "яндекс схема": {
+        "tile_url": "https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x={}&y={}&z={}",
+        "is_ellipsoid": true
+    },
+    "яндекс спутник": {
+        "tile_url": "https://core-sat.maps.yandex.net/tiles?l=sat&x={}&y={}&z={}",
+        "is_ellipsoid": true
+    }
+}

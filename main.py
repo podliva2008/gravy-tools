@@ -491,6 +491,27 @@ class Interface:
                    'scale': 20
                }
 
+        try:
+            with open('maps.json', 'r') as file:
+                json_string = file.read()
+                self.maps_info = json.loads(json_string)
+        except FileNotFoundError:
+            self.maps_info = {
+                'Яндекс схема': {
+                    'tile_url': ('https://core-renderer-tiles.maps.yandex.'
+                                 'net/tiles?l=map&x={}&y={}&z={}'),
+                    'is_ellipsoid': True
+                },
+                'Яндекс спутник': {
+                    'tile_url': ('https://core-sat.maps.yandex.net/'
+                                 'tiles?l=sat&x={}&y={}&z={}'),
+                    'is_ellipsoid': True
+                }
+            }
+
+            with open('maps.json', 'w') as file:
+                json.dump(self.maps_info, file, indent=4, ensure_ascii=False)
+
         # Окно и его настройки
         self.root = Tk()
         self.root.title('Gravy Tools')
@@ -500,8 +521,10 @@ class Interface:
 
         self.scale = IntVar()
         self.coords = StringVar()
-        self.selection_type = StringVar()
+        self.maptype = StringVar()
+
         self.coords.set(cached_entry['coords'])
+        self.maptype.set('Выберите карту')
 
         self.polygons = []
         self.polygon_points = []
@@ -521,8 +544,8 @@ class Interface:
         lower_frame.pack()
 
         coords_entry = ttk.Entry(master=upper_frame,
-                                      width=35,
-                                      textvariable=self.coords)
+                                 width=35,
+                                 textvariable=self.coords)
         coords_button = ttk.Button(master=upper_frame,
                                         text='Обновить',
                                         command=self.update_map)
@@ -540,6 +563,15 @@ class Interface:
                                 func=lambda event: self.show_scale())
         self.scaling_scale.bind(sequence='<ButtonRelease-1>',
                                 func=lambda event: self.update_map())
+
+        maptypes = list(self.maps_info.keys())
+        maptype_combobox = ttk.Combobox(master=upper_frame,
+                                        width=15,
+                                        textvariable=self.maptype,
+                                        values=maptypes,
+                                        state='readonly')
+        maptype_combobox.bind(sequence='<<ComboboxSelected>>',
+                              func=lambda event: self.update_map())
         
         scripts_label = ttk.Label(master=lower_frame, text='Скрипты:')
 
@@ -557,12 +589,11 @@ class Interface:
         coords_button.pack(side='left', padx=10, pady=10)
         self.scaling_scale.pack(side='left', padx=10, pady=10)
         self.scaling_label.pack(side='left', padx=10, pady=10)
+        maptype_combobox.pack(side='left', padx=10, pady=10)
 
         scripts_label.pack(side='left', padx=10, pady=10)
         poly_button.pack(side='left', padx=10, pady=10)
         houses_button.pack(side='left', padx=10, pady=10)
-
-        self.update_map()  # Для помещения карты на холст надо её обновить
 
         self.root.mainloop()
 
@@ -640,11 +671,11 @@ class Interface:
     def mouse_to_geo(self, x, y):
         """Перевод координат холста в географические координаты."""
 
-        # Я не ебу как это объяснить, разбирайтесь сами
+        # Я хз как это объяснить, разбирайтесь сами
         x, y = x / 256 + self.tile_x - 1, y / 256 + self.tile_y - 1
         z = self.scale.get()
 
-        # Математическая формула: https://clck.ru/37BGai
+        # https://clck.ru/37BGai
         lon = x / (2 ** z) * 360 - 180
         lat = math.atan(math.sinh(math.pi - y / (2 ** z) *
                                   (math.pi * 2))) * 180 / math.pi
@@ -653,34 +684,61 @@ class Interface:
     def update_map(self):
         """Обновление тайлов карты по географическим координатам."""
 
-        if len(self.polygons) > 0 or len(self.polygon_points) > 0:
-            answer = messagebox.askyesno('Gravy Tools',
-                                         'Полигоны . Продолжить?')
-            if not answer:
-                return
+        maptype = self.maptype.get()
+        url = self.maps_info[maptype]['tile_url']
+        is_ellipsoid = self.maps_info[maptype]['is_ellipsoid']
 
-        self.polygons = []
-        self.polygon_points = []
         lat, lon = self.coords.get().split(', ')
         lat, lon = float(lat), float(lon)
         z = self.scale.get()
 
-        # Математическая формула: https://clck.ru/37BGai
+        # Сначала высчитываем номер тайла для сферической проекции
+        # https://clck.ru/37BGai
         beta = lat * math.pi / 180
-        self.tile_x = int(((lon + 180) / 360) * (2 ** z))
-        self.tile_y = int((1 - ((math.log(math.tan(beta) +
-                                          (1 / math.cos(beta)))) / math.pi)) *
-                                          (2 ** (z - 1)))
+        stile_x = int(((lon + 180) / 360) * (2 ** z))
+        stile_y = int((1 - ((math.log(math.tan(beta) +
+                                      (1 / math.cos(beta)))) / math.pi)) *
+                                      (2 ** (z - 1)))
 
-        map = Image.new(mode='RGB', size=(768, 768))  # Сюда встанут тайлы
+        # Однако если проекция эллиптическая, высчитываем смещение тайла
+        # относительно сферической проекции, чтобы потом выровнять карты
+        if is_ellipsoid:
+            # https://clck.ru/37RLnz
+            radius_a = 6378137
+            radius_b = 6356752
+
+            # Находим широту и долготу тайла сферической проекции
+            lon = stile_x / (2 ** z) * 360 - 180
+            lat = math.atan(math.sinh(math.pi - stile_y / (2 ** z) *
+                                      (math.pi * 2))) * 180 / math.pi
+            
+            lat_radians = math.radians(lat)
+            y_compr = (math.sqrt((radius_a ** 2) - (radius_b ** 2)) /
+                             radius_a)
+            
+            m2 = (math.log((1 + math.sin(lat_radians)) /
+                           (1 - math.sin(lat_radians))) / 2 - y_compr *
+                           math.log((1 + y_compr * math.sin(lat_radians)) /
+                                    (1 - y_compr * math.sin(lat_radians))) / 2)
+
+            etile_x = int((lon + 180) / 360 * (2 ** z))
+            etile_y = int((2 ** z) / 2 - m2 * (2 ** z) / 2 / math.pi)
+
+            offset_x = int(((lon + 180) / 360 * (2 ** z) - etile_x) * 256)
+            offset_y = int(((2 ** z) / 2 - m2 * (2 ** z) /
+                            2 / math.pi - etile_y) * 256)
+            
+            self.tile_x, self.tile_y = etile_x, etile_y
+        else:
+            self.tile_x, self.tile_y = stile_x, stile_y
+            offset_x = offset_y = 0
+
+        map = Image.new(mode='RGB', size=(1280, 1280))  # Сюда встанут тайлы
         x, y = self.tile_x, self.tile_y
-        for i in range(3):  # Высота участка карты будет 3 тайла
-            for q in range(3):  # Ширина участка карты будет 3 тайла
+        for i in range(5):  # Высота участка карты будет 5 тайлов
+            for q in range(5):  # Ширина участка карты будет 5 тайлов
                 # Подробнее тут: https://clck.ru/37BGba
-                url = ('http://mt0.google.com/vt/'
-                       f'lyrs=s&x={x-(1-q)}&y={y-(1-i)}&z={z}&s=Ga')
-
-                response = requests.get(url)
+                response = requests.get(url.format(x-(2-q), y-(2-i), z))
                 decoded = BytesIO(response.content)
 
                 if response.status_code == 200:
@@ -688,7 +746,11 @@ class Interface:
                     map.paste(im=tile, box=(256*q, 256*i))
         self.map_tk = ImageTk.PhotoImage(map)
 
-        self.map_canvas.create_image(0, 0, anchor='nw', image=self.map_tk)
+        # Картинка и так смещена на -256 пикселей по x и y для отцентровки
+        self.map_canvas.create_image((-256 - offset_x),
+                                     (-256 - offset_y),
+                                     anchor='nw',
+                                     image=self.map_tk)
 
     def save_cache(self):
         """Сохранение последних действий пользователя в кэше"""
