@@ -715,7 +715,7 @@ class Interface:
             lat_radians = math.radians(lat)
             y_compr = (math.sqrt((radius_a ** 2) - (radius_b ** 2)) /
                              radius_a)
-            
+
             m2 = (math.log((1 + math.sin(lat_radians)) /
                            (1 - math.sin(lat_radians))) / 2 - y_compr *
                            math.log((1 + y_compr * math.sin(lat_radians)) /
@@ -727,14 +727,15 @@ class Interface:
             offset_x = int(((lon + 180) / 360 * (2 ** z) - etile_x) * 256)
             offset_y = int(((2 ** z) / 2 - m2 * (2 ** z) /
                             2 / math.pi - etile_y) * 256)
-            
-            self.tile_x, self.tile_y = etile_x, etile_y
+
+            x, y = etile_x, etile_y
         else:
-            self.tile_x, self.tile_y = stile_x, stile_y
+            x, y = stile_x, stile_y
             offset_x = offset_y = 0
 
+        self.tile_x, self.tile_y = stile_x, stile_y
+
         map = Image.new(mode='RGB', size=(1280, 1280))  # Сюда встанут тайлы
-        x, y = self.tile_x, self.tile_y
         for i in range(5):  # Высота участка карты будет 5 тайлов
             for q in range(5):  # Ширина участка карты будет 5 тайлов
                 # Подробнее тут: https://clck.ru/37BGba
