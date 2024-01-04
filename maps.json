@@ -1,9 +1,9 @@
 {
-    "Яндекс схема": {
+    "РЇРЅРґРµРєСЃ СЃС…РµРјР°": {
         "tile_url": "https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x={}&y={}&z={}",
         "is_ellipsoid": true
     },
-    "Яндекс спутник": {
+    "РЇРЅРґРµРєСЃ СЃРїСѓС‚РЅРёРє": {
         "tile_url": "https://core-sat.maps.yandex.net/tiles?l=sat&x={}&y={}&z={}",
         "is_ellipsoid": true
     }
