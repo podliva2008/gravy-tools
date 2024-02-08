@@ -44,7 +44,10 @@ def main():
         if not os.path.exists(cache_dir):
             os.makedirs(cache_dir)
 
-        from app import start_app
+        try:
+            from app import start_app
+        except ModuleNotFoundError:
+            from .app import start_app
 
     except Exception as e:
         _on_exception(e)
