@@ -1,26 +1,26 @@
+"""Packaging setup script."""
+
 from setuptools import setup, find_packages
-import codecs
-import os
 
-here = os.path.abspath(os.path.dirname(__file__))
+import pathlib
 
-with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
-    long_description = "\n" + fh.read()
+HERE = pathlib.Path(__file__).parent
+
+README = (HERE / "README.md").read_text()
 
 VERSION = '0.0.1'
-DESCRIPTION = 'Инструменты для упрощения строительства на TeamCIS'
-LONG_DESCRIPTION = 'Инструменты для упрощения строительства на TeamCIS засчёт удобного интерфейса, скриптов и редактора мира на локальном сервере'
 
-# Setting up
 setup(
-    name="gravy-tools",
+    name="gravy_tools",
     version=VERSION,
     author="podliva_2008 (Колесников Богдан)",
-    author_email="<mechanikbrother08@gmail.com>",
-    description=DESCRIPTION,
+    author_email="mechanikbrother08@gmail.com",
+    license="MIT",
+    description='Инструменты для упрощения строительства на TeamCIS',
     long_description_content_type="text/markdown",
-    long_description=long_description,
+    long_description=README,
     packages=find_packages(),
+    python_requires=">=3.10",
     install_requires=['pillow', 'requests'],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
