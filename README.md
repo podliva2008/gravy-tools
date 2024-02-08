@@ -1,7 +1,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/podliva2008/gravy-tools">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="/resources/images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Gravy-Tools</h3>
@@ -18,7 +18,7 @@
 
 ## О программе
 
-![](/images/screenshot.png)
+![](/resources/images/screenshot.png)
 
 Написана на Python 3.8 для использования в качестве инструмента для упрощения рутинных действий при строительстве. 
 На данный момент поддерживает следующие функции:
@@ -50,14 +50,14 @@
 2. Запустите установщик.
 
 3. Проверьте, что две галочки снизу отмечены.
-![](/images/python_installation.png)
+![](/resources/images/python_installation.png)
 
 4. Нажмите кнопку **Install Now**.
 
 #### Программа
 
 1. Нажмите на кнопку **Code** вверху страницы, затем на кнопку **Download ZIP**.
-![](/images/github_installation.png)
+![](/resources/images/github_installation.png)
 
 2. Распакуйте скачанный архив в удобной вам директории.
 
@@ -72,7 +72,7 @@
 ### Взаимодействие с картой
 
 По умолчанию программа запустится без включенной карты.
-![](/images/blank_map_screenshot.png)
+![](/resources/images/blank_map_screenshot.png)
 
 Чтобы её включить, в левом верхнем углу выберите карту из списка. Вы также можете добавлять свои карты, изменив или добавив нужные параметры в файле `maps.json`.
 
@@ -99,10 +99,10 @@
 Порядок действий:
 
 1. Выделите полигонами очертания зданий. Не забудьте сохранить каждый сделанный вами полигон, и при необходимости исправлять их если они были нарисованы неправильно.
-![](/images/contours_screenshot.png)
+![](/resources/images/contours_screenshot.png)
 
 2. Нажмите кнопку **Контуры**. Наблюдайте за работой скрипта.
-![](/images/contours_minecraft_screenshot.png)
+![](/resources/images/contours_minecraft_screenshot.png)
 
 ### Скрипт на дома
 Возводит массив зданий частного сектора (1-3 этажа в высоту).
@@ -110,24 +110,24 @@
 Порядок действий:
 
 1. Постройте контуры зданий. Найдите и исправьте контуры, которые соприкасаются. В противном случае дома будут построены с неправильными крышами.
-![](/images/houses_contours_screenshot.png)
+![](/resources/images/houses_contours_screenshot.png)
 
 2. Окрасьте контуры в блок стены, расставьте блоки крыш внутри контуров каждого здания (примечание: если блоков крыш слишком мало, крыша поломается). По умолчанию набор стен и крыш такой:
-![](/images/house_walls_roofs_screenshot.png)
+![](/resources/images/house_walls_roofs_screenshot.png)
 Однако вы можете сделать свой набор крыш и стен в файле `config.json`.
 После всех расстановок массив зданий должен выглядить примерно так:
-![](/images/houses_blocks_placed_screenshot.png)
+![](/resources/images/houses_blocks_placed_screenshot.png)
 
 3. Если высота какого-либо здания составляет два или три этажа, то под блоком крыши поставьте золотые блоки (2 золотых блока - 2 этажа соответственно, 3 золотых блока - 3 этажа). Пример для двухэтажных домов:
-![](/images/houses_gold_blocks_screenshot.png)
+![](/resources/images/houses_gold_blocks_screenshot.png)
 
 4. Сохраните ваши контуры в отдельном схематике. В случае если скрипт сломается, вы всегда сможете восстановить контуры.
 
 5. Выделите на карте полностью массив нужных вам зданий одним полигоном.
-![](/images/houses_selection_screenshot.png)
+![](/resources/images/houses_selection_screenshot.png)
 
 6. Нажмите кнопку **Дома**. Наблюдайте за работой скрипта.
-![](/images/houses_completed_screenshot.png)
+![](/resources/images/houses_completed_screenshot.png)
 
 Примечание: ни в коем случае не делайте скриптом здания требующие детализации или этажностью 4 этажа или выше. Такие дома стройте самостоятельно. 
 
