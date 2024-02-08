@@ -11,7 +11,6 @@ class Toolbar(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         
         self.maptype_combobox = ttk.Combobox(self, state='readonly')
-        self.maptype_combobox.set('Выберите карту')
 
         self.coords_entry = ttk.Entry(self, width=35)
         self.coords_entry.insert(0, '45.02783176031718, 38.98838186625211')

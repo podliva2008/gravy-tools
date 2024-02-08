@@ -14,9 +14,7 @@ class MapWidget(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
-        update_map = lambda _ = None: threading.Thread(
-            target=self.update_map
-            ).start()
+        self.scale = tk.IntVar(self, 19)
 
         self.polygon_canvas = PolygonCanvas(
             self, width=768, height=768, cursor='tcross'
@@ -25,33 +23,60 @@ class MapWidget(tk.Frame):
 
         self.polygon_canvas.pack()
         self.toolbar.pack()
-
-        self.toolbar.refresh_button['command'] = update_map
-
-        self.map_info = self.toolbar.maps_info[0]
-        self.tile_name, self.tile_url, self.is_ellipsoid = (
-           self.map_info['file_name'] ,
-           self.map_info['tile_url'],
-           self.map_info['is_ellipsoid']
-            )
         
         self.toolbar.maptype_combobox.set(
             self.toolbar.maptype_combobox['values'][0]
             )
 
-        self.scale = tk.IntVar(self, 19)
-        self.map_type = self.toolbar.maptype_combobox.get()
+        # This makes it easier to call it from button
+        update_map = lambda _ = None: threading.Thread(
+            target=self.update_map
+            ).start()
 
+        self.toolbar.refresh_button['command'] = update_map
+        self.toolbar.upscale_button['command'] = self.add_scale
+        self.toolbar.downscale_button['command'] = self.subtract_scale
+        self.toolbar.maptype_combobox.bind(
+            '<<ComboboxSelected>>', self.get_map_info
+        )
+
+        self.get_map_info()
         update_map()
 
 
-    def _change_scale(self, incr_value: int):
+    def get_map_info(self, _ = None):
+        for index, map_info in enumerate(self.toolbar.maps_info):
+            if (
+                map_info['ui_name'] == self.toolbar.maptype_combobox.get()
+                or index == -1
+            ):
+                self.map_info = map_info
+                self.tile_name, self.tile_url, self.is_ellipsoid = (
+                    self.map_info['file_name'],
+                    self.map_info['tile_url'],
+                    self.map_info['is_ellipsoid']
+                    )
+                break
+
+
+    def add_scale(self):
         curr_scale = self.scale.get()
-        if 0 <= curr_scale <= 20:
-            self.scale.set(curr_scale + incr_value)
+        if 0 <= curr_scale + 1 <= 20:
+            self.scale.set(curr_scale + 1)
+            threading.Thread(target=self.update_map).start()
+
+
+    def subtract_scale(self):
+        curr_scale = self.scale.get()
+        if 0 <= curr_scale - 1 <= 20:
+            self.scale.set(curr_scale - 1)
+            threading.Thread(target=self.update_map).start()
 
 
     def update_map(self):
+        """Update map tiles on a polygon canvas"""
+
+        # This is done to prevent user from creating multiple threads
         self.toolbar.refresh_button['state'] = 'disabled'
         self.toolbar.downscale_button['state'] = 'disabled'
         self.toolbar.upscale_button['state'] = 'disabled'
@@ -92,11 +117,10 @@ class MapWidget(tk.Frame):
                     )
                 self.map_photoimage = ImageTk.PhotoImage(map_pilimage)
 
-                if x > -2 and y > -2:
-                    self.polygon_canvas.delete('all')
-                    self.polygon_canvas.create_image(
-                        -256, -256, anchor='nw', image=self.map_photoimage
-                    )
+        self.polygon_canvas.delete('all')
+        self.polygon_canvas.create_image(
+            -256, -256, anchor='nw', image=self.map_photoimage
+        )
 
         self.toolbar.refresh_button['state'] = 'enabled'
         self.toolbar.downscale_button['state'] = 'enabled'
