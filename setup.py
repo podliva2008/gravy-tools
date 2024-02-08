@@ -22,7 +22,6 @@ setup(
     long_description=long_description,
     packages=find_packages(),
     install_requires=['pillow', 'requests'],
-    keywords=['python', 'video', 'stream', 'video stream', 'camera stream', 'sockets'],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: End Users/Desktop",
