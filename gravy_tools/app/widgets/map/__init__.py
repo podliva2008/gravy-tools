@@ -5,7 +5,7 @@ import time
 
 from PIL import Image, ImageTk
 
-from .polygon_canvas import PolygonCanvas
+from .selections_canvas import PolygonCanvas
 from .toolbar import Toolbar
 from ...utils import Tile, fetch_tile
 from ...images import get_imagetk
