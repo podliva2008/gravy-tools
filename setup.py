@@ -21,7 +21,7 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
     packages=find_packages(),
     python_requires=">=3.10",
-    install_requires=['pillow', 'requests'],
+    install_requires=['pillow', 'requests', 'platformdirs'],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: End Users/Desktop",
