@@ -5,7 +5,7 @@ import time
 
 from PIL import Image, ImageTk
 
-from .selections_canvas import PolygonCanvas
+from .selections_canvas import SelectionsCanvas
 from .toolbar import Toolbar
 from ...utils import Tile, fetch_tile
 from ...images import get_imagetk
@@ -16,7 +16,7 @@ class MapWidget(tk.Frame):
 
         self.scale = tk.IntVar(self, 19)
 
-        self.polygon_canvas = PolygonCanvas(
+        self.polygon_canvas = SelectionsCanvas(
             self, width=768, height=768, cursor='tcross'
             )
         self.toolbar = Toolbar(self)
