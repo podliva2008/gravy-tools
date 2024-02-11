@@ -11,6 +11,7 @@ from ...images import get_imagetk
 class MapWidget(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
+        self.pack_propagate(False)
 
         self.scale = tk.IntVar(self, 19)
 
