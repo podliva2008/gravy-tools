@@ -1,7 +1,5 @@
 import tkinter as tk
 import threading
-import queue
-import time
 
 from PIL import Image, ImageTk
 
