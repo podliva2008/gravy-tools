@@ -31,7 +31,7 @@ class SelectionsCanvas(tk.Canvas):
         del points[-1]
         self.itemconfig(tag, __coords = points)
 
-    def edit_preview(self, tag: str, event: tk.Event):
+    def temp_update_points(self, tag: str, event: tk.Event):
         points = self.coords(tag)
         points.append((event.x, event.y))
         self.itemconfig('temp', __coords = points)
